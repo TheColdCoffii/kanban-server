@@ -1,18 +1,20 @@
 package routes
 
 import (
+	"time"
+
 	"github.com/E-V-Castillo/kanban-api/internal/routes/api"
-	"github.com/E-V-Castillo/kanban-api/internal/routes/web"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
-func InitializeRoutes() *chi.Mux {
-
+func Initialize() *chi.Mux {
 	api := api.InitializeApiRoutes()
-	web := web.InitializeWebRoutes()
 	router := chi.NewRouter()
+	router.Use(middleware.Recoverer)
+	router.Use(middleware.Timeout(time.Second * 60))
 
 	router.Mount("/api", api)
-	router.Mount("/", web)
+
 	return router
 }
